@@ -1,13 +1,17 @@
 import os
 import urllib.request
 from app import app
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, redirect, jsonify, render_template
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/', methods=['GET'])
+def idx():
+    return render_template("index.html")
 
 @app.route('/file-upload', methods=['POST'])
 def upload_file():
