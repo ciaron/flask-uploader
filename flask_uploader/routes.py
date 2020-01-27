@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, request, redirect, jsonify, render_template
 from werkzeug.utils import secure_filename
 from flask_uploader import app
@@ -12,7 +13,8 @@ def allowed_file(filename):
 def index():
     if request.method == "POST":
         resp = upload_file()
-        return render_template("done.html")
+        #response = json.dumps(resp.data, sort_keys = True, indent = 4, separators = (',', ': '))
+        return render_template("done.html", resp=resp.data)
     else:
         return render_template("index.html")
 
