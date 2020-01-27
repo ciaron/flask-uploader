@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, request, redirect, jsonify, render_template
 from werkzeug.utils import secure_filename
 from flask_uploader import app
@@ -8,12 +9,20 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    if request.method == "POST":
+        resp = upload_file()
+        #response = json.dumps(resp.data, sort_keys = True, indent = 4, separators = (',', ': '))
+        return render_template("done.html", resp=resp.data)
+    else:
+        return render_template("index.html")
 
 @app.route('/file-upload', methods=['POST'])
 def upload_file():
+    if request.headers['Content-Type'] == 'text/plain':
+        return render_template("done.html")
+
     # check if the post request has the file part
     if 'file' not in request.files:
         resp = jsonify({'message' : 'No file part in the request'})
