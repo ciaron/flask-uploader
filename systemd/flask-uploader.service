@@ -1,0 +1,18 @@
+# this file goes in /etc/systemd/system/flask-uploader.service
+[Unit]
+Description=Gunicorn instance to serve flask-uploader
+After=network.target
+
+[Service]
+User=linstead
+Group=www-data
+WorkingDirectory=/home/linstead/tmp/flask-uploader
+Environment="PATH=/home/linstead/miniconda3/envs/flaskenv"
+#ExecStart=/home/linstead/miniconda3/envs/flaskenv/bin/gunicorn --workers 3 --bind unix:flask-uploader.sock -m 007 flask_uploader:app
+ExecStart=/home/linstead/miniconda3/envs/flaskenv/bin/gunicorn --workers 3 --bind 0.0.0.0:8080 -m 007 flask_uploader:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+
